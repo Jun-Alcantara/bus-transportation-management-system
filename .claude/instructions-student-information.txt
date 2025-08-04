@@ -1,0 +1,53 @@
+Let's create a new Model in the back-end. 
+let's name called it SrvStudentInformation - srv_student_informations
+Let's create a function that will process data from student_routes_validation. 
+I am thinking like processStudentInformation(UploadBatch $uploadBatch) -> select * from student_routes_validation where upload_batch_id = 1
+I don't UploadBatch has direct relationship to StudentRoutesValidation
+If there's no relationship, use UploadedFiles UploadBatch hasMany UploadedFiles and student_routes_validation has uploaded_file_id column. 
+What we are going to do in processStudentInformation is. 
+I want to extract the unique student from student_routes_validation and save it in SrvStudentInformation
+Then foreach student, I want to check if the student exist using the stu_autoid column in student_routes_validation from students.student_code.
+If the student does not exist, let's flag this student is new student in SrvStudentInformation.
+I want to also monitor the updates in student_special_needs, I want to make sure that these columns are unique per each student. 
+stuneeds_need1
+stuneeds_need2
+stuneeds_need3
+stuneeds_need4
+stuneeds_need5
+stuneeds_need6
+stuneeds_need7
+stuneeds_need8
+stuneeds_need9
+stuneeds_need10
+stuothneeds_need5
+stuothneeds_need4
+
+student special needs are stored in student_special_needs
+students table has many student_special_needs. 
+student_special_needs is a pivot table to special_needs
+
+We want to monitor if the student needs of a student changed. If there's is changes flag them and also store it in SrvStudentInformation
+Here's the mapping of column in student_routes_validation to special_needs table spn_code column so you can get the special_needs id
+
+SP-1 => stuneeds_need1
+SP-2 => stuneeds_need2
+SP-3 => stuneeds_need3
+SP-4 => stuneeds_need4
+SP-5 => stuneeds_need5
+SP-6 => stuneeds_need6
+SP-7 => stuneeds_need7
+SP-8 => stuneeds_need8
+SP-9 => stuneeds_need9
+SP-10 => stuneeds_need10
+SP-11 => stuothneeds_need5
+STUOTHNEEDS4 => stuothneeds_need4
+
+So far we have these columns in SrvStudentInformation
+- id 
+- stu_autoid
+- new student flag (maybe boolean? I don't you decide)
+- Incosistent student needs flag 
+- Student Needs changed flag
+
+When you're done create a documentation and save it somewhere in your memory so we can easily go back 
+Let me know how can I reference this memory

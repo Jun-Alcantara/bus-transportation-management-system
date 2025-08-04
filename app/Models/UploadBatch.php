@@ -34,6 +34,11 @@ class UploadBatch extends Model
         return $this->hasMany(UploadedFile::class);
     }
 
+    public function srvStudentInformation(): HasMany
+    {
+        return $this->hasMany(SrvStudentInformation::class);
+    }
+
     public function canBeDeleted(): bool
     {
         return $this->uploadedFiles()->count() === 0;
