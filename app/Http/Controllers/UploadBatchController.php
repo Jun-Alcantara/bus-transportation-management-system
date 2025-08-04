@@ -68,25 +68,57 @@ class UploadBatchController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(UploadBatch $uploadBatch)
+    public function show(Request $request, UploadBatch $uploadBatch)
     {
-        $uploadBatch->load(['creator', 'uploadedFiles.uploader']);
+        // Load uploaded files with search filter if provided
+        $uploadBatch->load(['creator', 'updater']);
+        
+        // Apply search filter to uploaded files if provided
+        if ($request->filled('files_search')) {
+            $search = $request->get('files_search');
+            $uploadBatch->load(['uploadedFiles' => function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('original_filename', 'like', "%{$search}%")
+                      ->orWhere('status', 'like', "%{$search}%");
+                })->with('uploader');
+            }]);
+        } else {
+            $uploadBatch->load(['uploadedFiles.uploader']);
+        }
 
         $studentValidations = null;
         
-        // If the batch status indicates processing is complete, fetch validation data
-        if ($uploadBatch->status === 'uploaded') {
-            $studentValidations = \App\Models\StudentRoutesValidation::query()
+        // If the batch status indicates processing is underway or complete, fetch validation data
+        if (in_array($uploadBatch->status, ['processing', 'uploaded'])) {
+            $query = \App\Models\StudentRoutesValidation::query()
                 ->whereHas('uploadedFile', function ($query) use ($uploadBatch) {
                     $query->where('upload_batch_id', $uploadBatch->id);
                 })
-                ->with('uploadedFile')
-                ->paginate(50);
+                ->with('uploadedFile');
+
+            // Apply search filter if provided
+            if ($request->filled('students_search')) {
+                $search = $request->get('students_search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('stu_autoid', 'like', "%{$search}%")
+                      ->orWhere('stu_firstname', 'like', "%{$search}%")
+                      ->orWhere('stu_lastname', 'like', "%{$search}%")
+                      ->orWhere('sch_name', 'like', "%{$search}%")
+                      ->orWhere('loc_loc', 'like', "%{$search}%")
+                      ->orWhere('ugeocode__', 'like', "%{$search}%");
+                });
+            }
+
+            $studentValidations = $query->paginate(50)->withQueryString();
         }
 
         return Inertia::render('StudentDataUpload/Show', [
             'uploadBatch' => $uploadBatch,
             'studentValidations' => $studentValidations,
+            'filters' => [
+                'files_search' => $request->get('files_search', ''),
+                'students_search' => $request->get('students_search', ''),
+            ]
         ]);
     }
 

@@ -11,7 +11,8 @@
       "Bash(mysql:*)",
       "Bash(curl:*)",
       "Bash(composer:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

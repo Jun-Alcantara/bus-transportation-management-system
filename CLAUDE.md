@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # STS v2 - Student School Bus Service Management System
 
 ## 📖 Documentation
@@ -18,9 +22,22 @@
 
 ### Development Commands
 ```bash
-npm run dev              # Start frontend dev server
+# Full Development Stack
+composer dev             # Start all services (server, queue, logs, vite)
+
+# Individual Services
+npm run dev              # Start frontend dev server (Vite)
 php artisan serve        # Start Laravel server
+php artisan queue:listen --tries=1  # Start queue worker
+php artisan pail --timeout=0        # Start log viewer
+
+# Asset Management
+npm run build            # Build frontend assets for production
 php artisan ziggy:generate  # Generate routes for JS
+
+# Code Quality
+composer test            # Run PHPUnit tests
+./vendor/bin/pint        # Format PHP code (Laravel Pint)
 ```
 
 ### Current Features
@@ -142,6 +159,34 @@ has_active_period()      // Boolean check
 - **[Architecture](./docs/architecture/overview.md)** - Design patterns and structure
 - **[Features](./docs/features/)** - Feature-specific documentation
 - **[Database](./docs/database/)** - Schema and relationships
+
+## 🏗️ Architecture Overview
+
+**Laravel + Inertia.js + React Stack**
+- **Backend**: Laravel 12 with MySQL database
+- **Frontend**: React 19 with Inertia.js for SPA-like experience
+- **UI Framework**: Tailwind CSS 4.0 + Shadcn/ui components
+- **Build Tool**: Vite for fast development and optimized builds
+- **Queue System**: Database-driven job processing for file uploads
+
+**Key Architecture Patterns:**
+- **Actions Pattern**: Business logic encapsulated in dedicated Action classes (`app/Actions/`)
+- **Service Layer**: Complex operations handled by Service classes (`app/Services/`)
+- **Inertia Pages**: React components in `resources/js/Pages/` mapped to Laravel routes
+- **Shared Components**: Reusable UI components in `resources/js/components/`
+- **Helper Functions**: Global PHP helpers in `app/helpers.php` for school periods
+
+**Database Architecture:**
+- **Soft Deletes**: Most models use soft delete functionality
+- **Audit Trail**: Created/updated by tracking on main entities
+- **Relationships**: Extensive use of Eloquent relationships across models
+- **Migrations**: Sequential migrations with proper foreign key constraints
+
+**File Processing System:**
+- **3-Tier Upload System**: `upload_batches` → `uploaded_files` → `student_routes_validations`
+- **Background Processing**: Laravel Jobs with progress tracking
+- **File Storage**: UUID-based naming in `storage/app/student-routes/`
+- **Queue Workers**: Separate queue listener for background file processing
 
 ---
 💡 **For detailed information about any aspect of the system, check the `/docs` folder!**
