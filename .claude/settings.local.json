@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(php artisan make:model:*)",
+      "Bash(php artisan make:controller:*)",
+      "Bash(php artisan:*)",
+      "WebFetch(domain:colorhunt.co)",
+      "Bash(mkdir:*)",
+      "Bash(php:*)",
+      "Bash(mysql:*)",
+      "Bash(curl:*)",
+      "Bash(composer:*)",
+      "Bash(find:*)"
+    ],
+    "deny": []
+  }
+}

@@ -1,0 +1,20 @@
+Let's create a new module called Student Data Upload. 
+The main function of this module is to allow user to upload multiple excel file at once. 
+Then the backend should store this file to local storage. 
+- User's should be able to create an "Upload Batch" record. The Upload Batch record should contain the ff. details:
+    - User uploaded the file
+    - Name of the bacth
+- Users should be allowed to edit the name of "Update Batch" record
+- Users must be allowed to manage each Upload Batch. So each upload batch has an inner page that shows a Upload file form. 
+- The Upload File form should have only 1 input called Student Routes File. 
+- The Student Route Files should be drag and drop file input that accepts multiple xls and xlsx
+- The Upload File should have "Upload" button. When click it should submit the form to the backend. Add some upload progress animation. 
+- Update Batch is only deletable when there's no Files attached to it.
+- Create a new model StudentRoutesValidation in the backend that will store the Student Route Files data from the front-end.
+- Use @.claude/data-source-sample.xlsx headers to create the data. If incase you can't read .xlsx you I converted it to csv file with the same header stored in @.claude/data-sample.csv
+- Create a controller that will process and store the data from the Upload File form and store it in StudentRoutesValidation.
+- Create a new model store the file details of the uploaded files from "Upload Files" form
+
+The instructions have already feed and process by claude, here's continuation and bugs.
+- When I try to drag and drop the first file, it listd the file below correctly. When I drag and drop a second file, it replaces the first file instead of just adding up.
+- When I click the "Upload" button, there's an error in the console. "Show.jsx:91 Upload error: TypeError: Cannot read properties of null (reading 'getAttribute')"

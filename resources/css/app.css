@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 8.9% 16.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 8.9% 16.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 8.9% 16.1%;
+    --primary: 226 100% 73%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 48 100% 88%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 48 100% 88%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 45 100% 69%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 6 87% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 226 100% 73%;
+    --radius: 0.75rem;
+    
+    /* Navbar and Sidebar specific colors */
+    --navbar-bg: 60 100% 97%;
+    --sidebar-bg: 60 100% 97%;
+  }
+
+  .dark {
+    --background: 220 8.9% 8%;
+    --foreground: 60 100% 97%;
+    --card: 220 8.9% 12%;
+    --card-foreground: 60 100% 97%;
+    --popover: 220 8.9% 12%;
+    --popover-foreground: 60 100% 97%;
+    --primary: 226 100% 73%;
+    --primary-foreground: 220 8.9% 8%;
+    --secondary: 220 8.9% 16%;
+    --secondary-foreground: 60 100% 97%;
+    --muted: 220 8.9% 16%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 45 100% 69%;
+    --accent-foreground: 220 8.9% 8%;
+    --destructive: 6 87% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 8.9% 20%;
+    --input: 220 8.9% 20%;
+    --ring: 226 100% 73%;
+  }
+}
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
