@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\RouteController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\Settings\SchoolYearController;
 use App\Http\Controllers\Settings\SchoolTermController;
@@ -28,6 +29,9 @@ Route::middleware('auth')->group(function () {
     
     // District Routes
     Route::resource('districts', DistrictController::class)->except(['create', 'show', 'edit']);
+    
+    // Route Routes (Routes & Runs module)
+    Route::resource('routes', RouteController::class);
     
     // Client Routes
     Route::resource('clients', ClientController::class)->except(['show', 'destroy']);

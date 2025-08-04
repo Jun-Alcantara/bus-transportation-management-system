@@ -7,6 +7,7 @@ use App\Models\UploadedFile;
 use App\Jobs\ProcessStudentDataFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Bus;
 
 class StudentDataUploadController extends Controller
 {
@@ -41,12 +42,12 @@ class StudentDataUploadController extends Controller
         // Update batch status to 'processing' immediately after files are uploaded
         $uploadBatch->update(['status' => 'processing']);
 
-        // Dispatch jobs to process files in the background
-        foreach ($uploadedFiles as $uploadedFile) {
-            ProcessStudentDataFile::dispatch($uploadedFile);
-        }
+        // Dispatch jobs as a chain to process files sequentially (one at a time)
+        $jobs = collect($uploadedFiles)->map(function ($uploadedFile) {
+            return new ProcessStudentDataFile($uploadedFile);
+        })->toArray();
 
-        
+        Bus::chain($jobs)->dispatch();
 
         return response()->json([
             'message' => 'Files uploaded successfully',

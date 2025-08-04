@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card'
 import { Route } from 'lucide-react'
 
-const Step4RoutesRuns = () => {
+const Step5RoutesRuns = () => {
     return (
         <Card>
             <CardHeader>
@@ -22,4 +22,4 @@ const Step4RoutesRuns = () => {
     )
 }
 
-export default Step4RoutesRuns
+export default Step5RoutesRuns

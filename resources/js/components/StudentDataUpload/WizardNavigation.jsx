@@ -1,11 +1,12 @@
-import { FileText, Database, Users, Route, Check } from 'lucide-react'
+import { FileText, Database, Users, School, Route, Check } from 'lucide-react'
 
 const WizardNavigation = ({ currentStep, onStepChange, uploadBatchStatus }) => {
     const wizardSteps = [
         { id: 1, title: 'Uploaded Files Summary', icon: FileText, description: 'Review uploaded files status' },
         { id: 2, title: 'Raw Data', icon: Database, description: 'View parsed student data' },
         { id: 3, title: "Student's Information", icon: Users, description: 'Student details management', disabled: uploadBatchStatus !== 'uploaded' },
-        { id: 4, title: 'Routes & Runs', icon: Route, description: 'Route management', disabled: uploadBatchStatus !== 'uploaded' }
+        { id: 4, title: 'Schools', icon: School, description: 'School information', disabled: uploadBatchStatus !== 'uploaded' },
+        { id: 5, title: 'Routes & Runs', icon: Route, description: 'Route management', disabled: uploadBatchStatus !== 'uploaded' }
     ]
 
     const canGoToStep = (stepId) => {

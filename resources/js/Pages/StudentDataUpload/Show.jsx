@@ -8,16 +8,18 @@ import WizardNavigation from '../../components/StudentDataUpload/WizardNavigatio
 import Step1UploadedFilesSummary from '../../components/StudentDataUpload/WizardSteps/Step1UploadedFilesSummary'
 import Step2RawData from '../../components/StudentDataUpload/WizardSteps/Step2RawData'
 import Step3StudentsInformation from '../../components/StudentDataUpload/WizardSteps/Step3StudentsInformation'
-import Step4RoutesRuns from '../../components/StudentDataUpload/WizardSteps/Step4RoutesRuns'
+import Step4Schools from '../../components/StudentDataUpload/WizardSteps/Step4Schools'
+import Step5RoutesRuns from '../../components/StudentDataUpload/WizardSteps/Step5RoutesRuns'
 import FileUploadSection from '../../components/StudentDataUpload/FileUploadSection'
 import UploadedFilesTable from '../../components/StudentDataUpload/UploadedFilesTable'
 
-export default function StudentDataUploadShow({ uploadBatch, studentValidations, filters = {} }) {
+export default function StudentDataUploadShow({ uploadBatch, studentValidations, studentInformation, filters = {} }) {
     const { flash } = usePage().props
     const [currentStep, setCurrentStep] = useState(1)
     
     const filesSearch = useSearch('files', uploadBatch.id, filters, filters.students_search)
     const studentsSearch = useSearch('students', uploadBatch.id, filters, filters.files_search)
+    const studentInfoSearch = useSearch('student_info', uploadBatch.id, filters, filters.student_info_search)
 
     const handleUploadComplete = () => {
         router.reload({ only: ['uploadBatch'] })
@@ -42,9 +44,17 @@ export default function StudentDataUploadShow({ uploadBatch, studentValidations,
                     />
                 )
             case 3:
-                return <Step3StudentsInformation />
+                return (
+                    <Step3StudentsInformation 
+                        studentInformation={studentInformation}
+                        filters={filters}
+                        onSearch={studentInfoSearch.handleSearch}
+                    />
+                )
             case 4:
-                return <Step4RoutesRuns />
+                return <Step4Schools />
+            case 5:
+                return <Step5RoutesRuns />
             default:
                 return (
                     <Step1UploadedFilesSummary 
