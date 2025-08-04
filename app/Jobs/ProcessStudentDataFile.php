@@ -94,11 +94,14 @@ class   ProcessStudentDataFile implements ShouldQueue
         $totalFiles = $batch->uploadedFiles()->count();
         $completedFiles = $batch->uploadedFiles()->where('status', 'completed')->count();
         $failedFiles = $batch->uploadedFiles()->where('status', 'failed')->count();
+        $processingFiles = $batch->uploadedFiles()->whereIn('status', ['pending', 'processing'])->count();
 
         if ($failedFiles > 0) {
             $batch->update(['status' => 'failed']);
         } elseif ($completedFiles === $totalFiles) {
-            $batch->update(['status' => 'completed']);
+            $batch->update(['status' => 'uploaded']);
+        } elseif ($processingFiles > 0 && $batch->status === 'waiting for upload') {
+            $batch->update(['status' => 'processing']);
         }
     }
 }

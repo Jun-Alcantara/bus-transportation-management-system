@@ -16,7 +16,7 @@ class UploadBatch extends Model
     ];
 
     protected $attributes = [
-        'status' => 'processing',
+        'status' => 'waiting for upload',
     ];
 
     public function creator(): BelongsTo

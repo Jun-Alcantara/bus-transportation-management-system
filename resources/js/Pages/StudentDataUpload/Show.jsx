@@ -4,10 +4,11 @@ import { Button } from '../../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/table'
 import { Progress } from '../../components/ui/progress'
+import { Pagination, PaginationInfo } from '../../components/ui/pagination'
 import DashboardLayout from '../../components/DashboardLayout'
 import { ArrowLeft, Upload, File, Check, X, Clock, AlertCircle, Trash2 } from 'lucide-react'
 
-export default function StudentDataUploadShow({ uploadBatch }) {
+export default function StudentDataUploadShow({ uploadBatch, studentValidations }) {
     const { flash } = usePage().props
     const [isDragActive, setIsDragActive] = useState(false)
     const [uploadProgress, setUploadProgress] = useState({})
@@ -165,91 +166,166 @@ export default function StudentDataUploadShow({ uploadBatch }) {
                     </div>
                 )}
 
-                {/* File Upload Section */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center space-x-2">
-                            <Upload className="h-5 w-5" />
-                            <span>Upload Student Routes Files</span>
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        {/* Drag and Drop Area */}
-                        <div
-                            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
-                                isDragActive 
-                                    ? 'border-blue-400 bg-blue-50' 
-                                    : 'border-gray-300 hover:border-gray-400'
-                            }`}
-                            onDragEnter={handleDrag}
-                            onDragLeave={handleDrag}
-                            onDragOver={handleDrag}
-                            onDrop={handleDrop}
-                            onClick={handleDragAreaClick}
-                        >
-                            <File className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                            <p className="text-lg font-medium mb-2">
-                                Drop your Excel files here, or click to browse
-                            </p>
-                            <p className="text-sm text-muted-foreground mb-4">
-                                Supports .xls and .xlsx files (max 10MB each)
-                            </p>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                multiple
-                                accept=".xls,.xlsx"
-                                onChange={handleFileChange}
-                                className="hidden"
-                                id="file-upload"
-                            />
-                            <label htmlFor="file-upload">
-                                <Button variant="outline" className="cursor-pointer" type="button">
-                                    Browse Files
-                                </Button>
-                            </label>
-                        </div>
-
-                        {/* Selected Files */}
-                        {form.data.files.length > 0 && (
-                            <div className="space-y-4">
-                                <h4 className="font-medium">Selected Files:</h4>
-                                <div className="space-y-2">
-                                    {form.data.files.map((file, index) => (
-                                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                            <div className="flex items-center space-x-3">
-                                                <File className="h-4 w-4 text-green-500" />
-                                                <span className="text-sm font-medium">{file.name}</span>
-                                                <span className="text-xs text-muted-foreground">
-                                                    ({formatFileSize(file.size)})
-                                                </span>
-                                            </div>
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => removeFile(index)}
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    ))}
+                {/* Conditional Content: Upload Form or Student Data */}
+                {uploadBatch.status === 'uploaded' ? (
+                    /* Student Validation Data Section */
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Check className="h-5 w-5 text-green-500" />
+                                <span>Student Route Data</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            {studentValidations && studentValidations.data.length > 0 ? (
+                                <>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Student ID</TableHead>
+                                                <TableHead>Name</TableHead>
+                                                <TableHead>School</TableHead>
+                                                <TableHead>Route</TableHead>
+                                                <TableHead>Stop</TableHead>
+                                                <TableHead>Grade</TableHead>
+                                                <TableHead>Address</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {studentValidations.data.map((student) => (
+                                                <TableRow key={student.id}>
+                                                    <TableCell className="font-medium">
+                                                        {student.stu_autoid}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.stu_firstname} {student.stu_lastname}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.sch_name}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.rte_desc} ({student.rte_id})
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.loc_loc}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.stu_zgrades_descriptor}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {student.stu_loc_number} {student.stu_loc_streetname} {student.stu_loc_type}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                    
+                                    {/* Pagination */}
+                                    <div className="flex items-center justify-between p-4 border-t">
+                                        <PaginationInfo
+                                            from={studentValidations.from}
+                                            to={studentValidations.to}
+                                            total={studentValidations.total}
+                                        />
+                                        <Pagination links={studentValidations.links} />
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-center py-12">
+                                    <p className="text-muted-foreground">
+                                        No student route data found for this batch.
+                                    </p>
                                 </div>
-                                <div className="flex justify-end">
-                                    <Button 
-                                        onClick={uploadFiles}
-                                        disabled={isUploading}
-                                        style={{ backgroundColor: '#799EFF', color: 'white' }}
-                                        className="hover:opacity-90"
-                                    >
-                                        {isUploading ? 'Uploading...' : 'Upload Files'}
+                            )}
+                        </CardContent>
+                    </Card>
+                ) : (
+                    /* File Upload Section */
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center space-x-2">
+                                <Upload className="h-5 w-5" />
+                                <span>Upload Student Routes Files</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            {/* Drag and Drop Area */}
+                            <div
+                                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+                                    isDragActive 
+                                        ? 'border-blue-400 bg-blue-50' 
+                                        : 'border-gray-300 hover:border-gray-400'
+                                }`}
+                                onDragEnter={handleDrag}
+                                onDragLeave={handleDrag}
+                                onDragOver={handleDrag}
+                                onDrop={handleDrop}
+                                onClick={handleDragAreaClick}
+                            >
+                                <File className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                                <p className="text-lg font-medium mb-2">
+                                    Drop your Excel files here, or click to browse
+                                </p>
+                                <p className="text-sm text-muted-foreground mb-4">
+                                    Supports .xls and .xlsx files (max 10MB each)
+                                </p>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    multiple
+                                    accept=".xls,.xlsx"
+                                    onChange={handleFileChange}
+                                    className="hidden"
+                                    id="file-upload"
+                                />
+                                <label htmlFor="file-upload">
+                                    <Button variant="outline" className="cursor-pointer" type="button">
+                                        Browse Files
                                     </Button>
-                                </div>
+                                </label>
                             </div>
-                        )}
-                    </CardContent>
-                </Card>
+
+                            {/* Selected Files */}
+                            {form.data.files.length > 0 && (
+                                <div className="space-y-4">
+                                    <h4 className="font-medium">Selected Files:</h4>
+                                    <div className="space-y-2">
+                                        {form.data.files.map((file, index) => (
+                                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                                <div className="flex items-center space-x-3">
+                                                    <File className="h-4 w-4 text-green-500" />
+                                                    <span className="text-sm font-medium">{file.name}</span>
+                                                    <span className="text-xs text-muted-foreground">
+                                                        ({formatFileSize(file.size)})
+                                                    </span>
+                                                </div>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => removeFile(index)}
+                                                    className="text-red-500 hover:text-red-700"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="flex justify-end">
+                                        <Button 
+                                            onClick={uploadFiles}
+                                            disabled={isUploading}
+                                            style={{ backgroundColor: '#799EFF', color: 'white' }}
+                                            className="hover:opacity-90"
+                                        >
+                                            {isUploading ? 'Uploading...' : 'Upload Files'}
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Uploaded Files Table */}
                 {uploadBatch.uploaded_files && uploadBatch.uploaded_files.length > 0 && (

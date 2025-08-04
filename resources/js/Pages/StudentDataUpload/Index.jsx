@@ -10,6 +10,64 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '.
 import { Pagination, PaginationInfo } from '../../components/ui/pagination'
 import DashboardLayout from '../../components/DashboardLayout'
 
+// Status Badge Component
+const StatusBadge = ({ status }) => {
+    const getStatusStyle = (status) => {
+        switch (status) {
+            case 'waiting for upload':
+                return {
+                    backgroundColor: '#6B7280',
+                    color: 'white',
+                    text: 'Waiting for Upload'
+                }
+            case 'uploaded':
+                return {
+                    backgroundColor: '#799EFF',
+                    color: 'white',
+                    text: 'Processed'
+                }
+            case 'processing':
+                return {
+                    backgroundColor: '#F59E0B',
+                    color: 'white',
+                    text: 'Processing'
+                }
+            case 'completed':
+                return {
+                    backgroundColor: '#10B981',
+                    color: 'white',
+                    text: 'Completed'
+                }
+            case 'failed':
+                return {
+                    backgroundColor: '#DC3C22',
+                    color: 'white',
+                    text: 'Failed'
+                }
+            default:
+                return {
+                    backgroundColor: '#6B7280',
+                    color: 'white',
+                    text: status || 'Unknown'
+                }
+        }
+    }
+
+    const style = getStatusStyle(status)
+    
+    return (
+        <span 
+            className="text-xs px-2 py-1 rounded-full font-medium"
+            style={{ 
+                backgroundColor: style.backgroundColor, 
+                color: style.color 
+            }}
+        >
+            {style.text}
+        </span>
+    )
+}
+
 export default function StudentDataUploadIndex({ uploadBatches, filters }) {
     const { flash, errors } = usePage().props
     const [showForm, setShowForm] = useState(false)
@@ -245,6 +303,13 @@ export default function StudentDataUploadIndex({ uploadBatches, filters }) {
                                             >
                                                 Batch Name
                                             </TableHead>
+                                            <TableHead 
+                                                sortable
+                                                onSort={() => handleSort('status')}
+                                                sortDirection={filters.sort === 'status' ? filters.direction : null}
+                                            >
+                                                Status
+                                            </TableHead>
                                             <TableHead>Files Count</TableHead>
                                             <TableHead 
                                                 sortable
@@ -262,6 +327,9 @@ export default function StudentDataUploadIndex({ uploadBatches, filters }) {
                                             <TableRow key={batch.id}>
                                                 <TableCell className="font-medium">
                                                     {batch.name}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <StatusBadge status={batch.status} />
                                                 </TableCell>
                                                 <TableCell>
                                                     <span className="text-sm bg-muted px-2 py-1 rounded">

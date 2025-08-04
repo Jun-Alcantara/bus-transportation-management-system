@@ -38,6 +38,9 @@ class StudentDataUploadController extends Controller
             $uploadedFiles[] = $uploadedFile;
         }
 
+        // Update batch status to 'processing' immediately after files are uploaded
+        $uploadBatch->update(['status' => 'processing']);
+
         // Dispatch jobs to process files in the background
         foreach ($uploadedFiles as $uploadedFile) {
             ProcessStudentDataFile::dispatch($uploadedFile);

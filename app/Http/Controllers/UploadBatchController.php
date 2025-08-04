@@ -72,8 +72,21 @@ class UploadBatchController extends Controller
     {
         $uploadBatch->load(['creator', 'uploadedFiles.uploader']);
 
+        $studentValidations = null;
+        
+        // If the batch status indicates processing is complete, fetch validation data
+        if ($uploadBatch->status === 'uploaded') {
+            $studentValidations = \App\Models\StudentRoutesValidation::query()
+                ->whereHas('uploadedFile', function ($query) use ($uploadBatch) {
+                    $query->where('upload_batch_id', $uploadBatch->id);
+                })
+                ->with('uploadedFile')
+                ->paginate(50);
+        }
+
         return Inertia::render('StudentDataUpload/Show', [
             'uploadBatch' => $uploadBatch,
+            'studentValidations' => $studentValidations,
         ]);
     }
 
