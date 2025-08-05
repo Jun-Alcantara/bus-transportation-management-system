@@ -50,6 +50,11 @@ class School extends Model
         return $this->belongsTo(User::class, 'updated_by');
     }
 
+    public function schoolMaps(): HasMany
+    {
+        return $this->hasMany(SchoolMap::class, 'sts_school_code', 'school_code');
+    }
+
     public function getFullAddressAttribute(): string
     {
         return $this->street_number . ' ' . $this->street . ', ' . $this->zip_code;

@@ -88,6 +88,7 @@ class UploadBatchController extends Controller
 
         $studentValidations = null;
         $studentInformation = null;
+        $schoolValidations = null;
         
         // If the batch status indicates processing is underway or complete, fetch validation data
         if (in_array($uploadBatch->status, ['processing', 'uploaded'])) {
@@ -125,16 +126,33 @@ class UploadBatchController extends Controller
             }
 
             $studentInformation = $studentInfoQuery->paginate(50, ['*'], 'student_info_page')->withQueryString();
+
+            // Fetch school validation data
+            $schoolValidationQuery = \App\Models\SrvSchoolValidation::query()
+                ->where('upload_batch_id', $uploadBatch->id);
+
+            // Apply search filter for school validations if provided
+            if ($request->filled('school_validation_search')) {
+                $search = $request->get('school_validation_search');
+                $schoolValidationQuery->where(function ($q) use ($search) {
+                    $q->where('school_code', 'like', "%{$search}%")
+                      ->orWhere('sch_name', 'like', "%{$search}%");
+                });
+            }
+
+            $schoolValidations = $schoolValidationQuery->paginate(50, ['*'], 'school_validation_page')->withQueryString();
         }
 
         return Inertia::render('StudentDataUpload/Show', [
             'uploadBatch' => $uploadBatch,
             'studentValidations' => $studentValidations,
             'studentInformation' => $studentInformation,
+            'schoolValidations' => $schoolValidations,
             'filters' => [
                 'files_search' => $request->get('files_search', ''),
                 'students_search' => $request->get('students_search', ''),
                 'student_info_search' => $request->get('student_info_search', ''),
+                'school_validation_search' => $request->get('school_validation_search', ''),
             ]
         ]);
     }

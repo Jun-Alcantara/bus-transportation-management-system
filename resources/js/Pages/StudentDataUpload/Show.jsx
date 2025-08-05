@@ -13,13 +13,14 @@ import Step5RoutesRuns from '../../components/StudentDataUpload/WizardSteps/Step
 import FileUploadSection from '../../components/StudentDataUpload/FileUploadSection'
 import UploadedFilesTable from '../../components/StudentDataUpload/UploadedFilesTable'
 
-export default function StudentDataUploadShow({ uploadBatch, studentValidations, studentInformation, filters = {} }) {
+export default function StudentDataUploadShow({ uploadBatch, studentValidations, studentInformation, schoolValidations, filters = {} }) {
     const { flash } = usePage().props
     const [currentStep, setCurrentStep] = useState(1)
     
     const filesSearch = useSearch('files', uploadBatch.id, filters, filters.students_search)
     const studentsSearch = useSearch('students', uploadBatch.id, filters, filters.files_search)
     const studentInfoSearch = useSearch('student_info', uploadBatch.id, filters, filters.student_info_search)
+    const schoolValidationSearch = useSearch('school_validation', uploadBatch.id, filters, filters.school_validation_search)
 
     const handleUploadComplete = () => {
         router.reload({ only: ['uploadBatch'] })
@@ -52,7 +53,13 @@ export default function StudentDataUploadShow({ uploadBatch, studentValidations,
                     />
                 )
             case 4:
-                return <Step4Schools />
+                return (
+                    <Step4Schools 
+                        schoolValidations={schoolValidations}
+                        filters={filters}
+                        onSearch={schoolValidationSearch.handleSearch}
+                    />
+                )
             case 5:
                 return <Step5RoutesRuns />
             default:

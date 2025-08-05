@@ -1,24 +1,5 @@
-Let's create a new module called "Routes & Runs"
-This is a CRUD of Routes that hasMany Runs.
-I want to be able to create a Route with:
-school_year_id belongsTo school_years table. (you can get the active school year using a helper function `active_school_year`)
-school_term_id belongs To school_terms table. (you can get the active school year using a helper function `active_school_term`)
-district - belongsTo districts table
-name - string
-code - string
-description - optional string
-status
-date_deactivated
-date_activated
-
-Routes can have a multiple Runs
-Runs have:
-school_year_id belongsTo school_years table. (you can get the active school year using a helper function `active_school_year`)
-school_term_id belongs To school_terms table. (you can get the active school year using a helper function `active_school_term`)
-Route_id = belongs to routes table
-run_code - description
-status
-date_deactivated
-date_activated
-
-I want to be able to create multiple runs along with the route creation
+Analyze student_routes_validation and it's content. 
+The content should have students records in multiple entry style. 
+For example, every unique student has multiple routes. 
+Each route has multiple run. 
+Can you verify that?
