@@ -6,7 +6,6 @@ import { ArrowLeft } from 'lucide-react'
 import { useSearch } from '../../hooks/useSearch'
 import WizardNavigation from '../../components/StudentDataUpload/WizardNavigation'
 import Step1UploadedFilesSummary from '../../components/StudentDataUpload/WizardSteps/Step1UploadedFilesSummary'
-import Step2RawData from '../../components/StudentDataUpload/WizardSteps/Step2RawData'
 import Step3StudentsInformation from '../../components/StudentDataUpload/WizardSteps/Step3StudentsInformation'
 import Step4Schools from '../../components/StudentDataUpload/WizardSteps/Step4Schools'
 import Step5RoutesRuns from '../../components/StudentDataUpload/WizardSteps/Step5RoutesRuns'
@@ -34,17 +33,11 @@ export default function StudentDataUploadShow({ uploadBatch, studentValidations,
                         uploadBatch={uploadBatch}
                         filters={filters}
                         onSearch={filesSearch.handleSearch}
+                        studentValidations={studentValidations}
+                        onStudentsSearch={studentsSearch.handleSearch}
                     />
                 )
             case 2:
-                return (
-                    <Step2RawData 
-                        studentValidations={studentValidations}
-                        filters={filters}
-                        onSearch={studentsSearch.handleSearch}
-                    />
-                )
-            case 3:
                 return (
                     <Step3StudentsInformation 
                         studentInformation={studentInformation}
@@ -52,7 +45,7 @@ export default function StudentDataUploadShow({ uploadBatch, studentValidations,
                         onSearch={studentInfoSearch.handleSearch}
                     />
                 )
-            case 4:
+            case 3:
                 return (
                     <Step4Schools 
                         schoolValidations={schoolValidations}
@@ -60,7 +53,7 @@ export default function StudentDataUploadShow({ uploadBatch, studentValidations,
                         onSearch={schoolValidationSearch.handleSearch}
                     />
                 )
-            case 5:
+            case 4:
                 return <Step5RoutesRuns />
             default:
                 return (
@@ -68,6 +61,8 @@ export default function StudentDataUploadShow({ uploadBatch, studentValidations,
                         uploadBatch={uploadBatch}
                         filters={filters}
                         onSearch={filesSearch.handleSearch}
+                        studentValidations={studentValidations}
+                        onStudentsSearch={studentsSearch.handleSearch}
                     />
                 )
         }
